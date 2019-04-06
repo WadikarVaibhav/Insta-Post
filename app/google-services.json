@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "598109311163",
+    "firebase_url": "https://insta-post-a8b35.firebaseio.com",
+    "project_id": "insta-post-a8b35",
+    "storage_bucket": "insta-post-a8b35.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598109311163:android:a33b85e18db2f44c",
+        "android_client_info": {
+          "package_name": "com.android.instapost"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9D6ytBk9_gcYokV7xmYmtsqDdF2fwl9U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598109311163-ih8v9u0qlonbccqamuo5pihkj38vdfd0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

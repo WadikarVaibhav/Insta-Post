@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email_registration"
+        android:textSize="25sp"
+        android:textColor="@color/black"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft ="10dp"
+        android:layout_marginRight ="10dp"
+        android:id="@+id/textEmailReg"/>
+
+
+
+    <EditText
+        android:id="@+id/user_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:inputType="textEmailAddress"
+        android:layout_marginLeft ="10dp"
+        android:layout_marginRight ="10dp"
+        android:hint="@string/prompt_email"
+        android:layout_below="@+id/textEmailReg"/>
+
+    <EditText
+        android:id="@+id/user_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft ="10dp"
+        android:layout_marginRight ="10dp"
+        android:inputType="textPassword"
+        android:hint="@string/prompt_password"
+        android:layout_below="@+id/user_email"/>
+
+
+    <EditText
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:inputType="textPassword"
+        android:layout_marginLeft ="10dp"
+        android:layout_marginRight ="10dp"
+        android:hint="@string/prompt_name"
+        android:layout_below="@+id/user_password"/>
+
+    <EditText
+    android:id="@+id/nickname"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:layout_marginLeft ="10dp"
+    android:layout_marginRight ="10dp"
+    android:inputType="textPassword"
+    android:hint="@string/promt_nickname"
+    android:layout_below="@+id/name"/>
+
+    <Button
+        android:id="@+id/register_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_marginLeft ="10dp"
+        android:layout_marginRight ="10dp"
+        android:layout_below="@+id/nickname"
+        android:text="@string/register"
+        android:textColor="#ffffff"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        android:background="@color/colorPrimary"/>
+</RelativeLayout>
