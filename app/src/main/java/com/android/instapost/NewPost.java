@@ -20,22 +20,20 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 public class NewPost extends Fragment {
 
     public static final int REQUEST_CODE_CAMERA_UPLOAD = 1;
     public static final int REQUEST_CODE_GALLERY_UPLOAD = 2;
-    AlertDialog dialog;
+    AlertDialog alertDialog;
     private static final double IMAGE_SIZE = 1000000.0;
     private static final double MAX_IMAGE_SIZE = 5.0;
     private byte[] bytes;
@@ -47,12 +45,12 @@ public class NewPost extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        String[] uploadModes = {"Camera", "Gallery"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Select Image/s to Upload");
-        builder.setItems(uploadModes, new DialogInterface.OnClickListener() {
+    public void onStart() {
+        super.onStart();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Select Picture");
+        builder.setItems(R.array.upload_options, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
@@ -67,8 +65,11 @@ public class NewPost extends Fragment {
                 }
             }
         });
-        dialog = builder.show();
-        dialog.show();
+        if (alertDialog == null) {
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
     }
 
     private void clickPictureAndUpload() {
@@ -92,7 +93,6 @@ public class NewPost extends Fragment {
             Uri selectedImgUri = data.getData();
             uploadNewImage(selectedImgUri);
         }
-        dialog.dismiss();
     }
 
     private void uploadNewImage(Uri selectedImgUri) {
@@ -114,10 +114,11 @@ public class NewPost extends Fragment {
         return stream.toByteArray();
     }
 
-    private void startImageUploadOnCloud() {
+    private void uploadImageOnCloud() {
         ImageFilePath imageFilePath = new ImageFilePath();
-        final StorageReference storageReference = FirebaseStorage.getInstance().getReference().child(imageFilePath.FIREBASE_IMAGE_STORAGE + "/");
-        if (bytes.length/IMAGE_SIZE < MAX_IMAGE_SIZE) {
+        final StorageReference storageReference = FirebaseStorage.getInstance().getReference()
+                .child(imageFilePath.FIREBASE_IMAGE_STORAGE + "/" + UUID.randomUUID().toString());
+        if (bytes.length / IMAGE_SIZE < MAX_IMAGE_SIZE) {
             StorageMetadata metadata = new StorageMetadata.Builder()
                     .setContentType("image/jpg").setContentLanguage("en")
                     .build();
@@ -138,15 +139,16 @@ public class NewPost extends Fragment {
 
     public class BackgroundImageResize extends AsyncTask<Uri, Integer, byte[]> {
         Bitmap bitmap;
+
         public BackgroundImageResize(Bitmap bitmap) {
-            if(bitmap != null){
+            if (bitmap != null) {
                 this.bitmap = bitmap;
             }
         }
 
         @Override
-        protected byte[] doInBackground(Uri... params ) {
-            if(bitmap == null){
+        protected byte[] doInBackground(Uri... params) {
+            if (bitmap == null) {
                 try {
                     bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), params[0]);
                 } catch (IOException e) {
@@ -154,12 +156,12 @@ public class NewPost extends Fragment {
             }
 
             byte[] bytes = null;
-            for (int i = 1; i < 11; i++){
-                if(i == 10){
+            for (int i = 1; i < 11; i++) {
+                if (i == 10) {
                     break;
                 }
-                bytes = getBytesFromBitmap(bitmap,100/i);
-                if(bytes.length/ IMAGE_SIZE < MAX_IMAGE_SIZE){
+                bytes = getBytesFromBitmap(bitmap, 100 / i);
+                if (bytes.length / IMAGE_SIZE < MAX_IMAGE_SIZE) {
                     return bytes;
                 }
             }
@@ -170,7 +172,7 @@ public class NewPost extends Fragment {
         protected void onPostExecute(byte[] bytes) {
             super.onPostExecute(bytes);
             NewPost.this.bytes = bytes;
-            startImageUploadOnCloud();
+            uploadImageOnCloud();
         }
     }
 
