@@ -16,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,7 +31,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class NewPost extends Fragment {
+public class NewPost extends Fragment implements View.OnClickListener {
 
     public static final int REQUEST_CODE_CAMERA_UPLOAD = 1;
     public static final int REQUEST_CODE_GALLERY_UPLOAD = 2;
@@ -37,11 +39,19 @@ public class NewPost extends Fragment {
     private static final double IMAGE_SIZE = 1000000.0;
     private static final double MAX_IMAGE_SIZE = 5.0;
     private byte[] bytes;
+    ImageView imageView;
+    Button uploadImageBtn;
+    Uri selectedImgUri;
+    Bitmap selectedImgBitmap;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_newpost, container, false);
+        View view = inflater.inflate(R.layout.fragment_newpost, container, false);
+        imageView = (ImageView) view.findViewById(R.id.imageDisplay);
+        uploadImageBtn = (Button) view.findViewById(R.id.imageUploadBtn);
+        uploadImageBtn.setOnClickListener(this);
+        return view;
     }
 
     @Override
@@ -72,6 +82,7 @@ public class NewPost extends Fragment {
 
     }
 
+
     private void clickPictureAndUpload() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, REQUEST_CODE_CAMERA_UPLOAD);
@@ -87,25 +98,23 @@ public class NewPost extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_CAMERA_UPLOAD && resultCode == Activity.RESULT_OK) {
-            Bitmap bitmap = (Bitmap) data.getExtras().get("data");
-            uploadNewImage(bitmap);
+            selectedImgBitmap = (Bitmap) data.getExtras().get("data");
+            imageView.setImageBitmap(selectedImgBitmap);
         } else if (requestCode == REQUEST_CODE_GALLERY_UPLOAD && resultCode == Activity.RESULT_OK) {
-            Uri selectedImgUri = data.getData();
-            uploadNewImage(selectedImgUri);
+            selectedImgUri = data.getData();
+            imageView.setImageURI(selectedImgUri);
         }
     }
 
-    private void uploadNewImage(Uri selectedImgUri) {
-        if (selectedImgUri != null) {
+    private void uploadNewImage() {
+        if (selectedImgBitmap != null) {
+            BackgroundImageResize resize = new BackgroundImageResize(selectedImgBitmap);
+            Uri uri = null;
+            resize.execute(uri);
+        } else if (selectedImgUri != null) {
             BackgroundImageResize resize = new BackgroundImageResize(null);
             resize.execute(selectedImgUri);
         }
-    }
-
-    private void uploadNewImage(Bitmap imageBitmap) {
-        BackgroundImageResize resize = new BackgroundImageResize(imageBitmap);
-        Uri uri = null;
-        resize.execute(uri);
     }
 
     public static byte[] getBytesFromBitmap(Bitmap bitmap, int quality) {
@@ -134,6 +143,16 @@ public class NewPost extends Fragment {
                     Toast.makeText(getContext(), "could not upload photo", Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.imageUploadBtn:
+                break;
+            default:
+                break;
         }
     }
 
